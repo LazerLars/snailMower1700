@@ -73,7 +73,7 @@ function love.load()
    
 end
 
-local speed = 35  -- Adjust this value as needed (pixels per second)
+local speed = 17  -- Adjust this value as needed (pixels per second)
 
 function love.update(dt)
     -- Get the current mouse position

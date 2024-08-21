@@ -112,25 +112,27 @@ function love.draw()
     maid64.start()--starts the maid64 process
     -- my sprite is 6x8 and is a lawn mower facing down, so the part mowing the lawn is in the bottom of the sprite.
     -- the below sort of works, but the sprite easily fips
-    local sy = 1
-    local degress = 1
+    local degress = nil  -- Rotation in radians (if any)
+    local sy = 1         -- Scale Y (flipping vertically)
+    local originX = 3    -- Origin X (center of 6px width)
+    local originY = 4    -- Origin Y (center of 8px height)
+
     if player.dir == "up" then
-        sy = -1
+        sy = -1  -- Flip vertically
         degress = nil
-    -- else
-    --     sy = 1
-    -- elseif player.dir == "right" then
-    --     degress = math.rad(270)
-    --     sy = 1
-    -- elseif player.dir == "left" then
-    --     degress = math.rad(90)
-    --     sy = 1
     elseif player.dir == "down" then
+        sy = 1   -- No flip
         degress = nil
-        sy = 1
+    -- elseif player.dir == "right" then
+    --     degress = math.rad(270)  -- Rotate 270 degrees
+    --     sy = 1   -- No flip
+    -- elseif player.dir == "left" then
+    --     degress = math.rad(90)   -- Rotate 90 degrees
+    --     sy = 1   -- No flip
     end
 
-    mowerAnimation:draw(sprMower1, player.x, player.y,  degress, sy)
+    -- Draw the mower animation with the correct transformations
+    mowerAnimation:draw(sprMower1, player.x, player.y, degress, 1, sy, originX, originY)
     
     for key, snail in pairs(enemies) do
         -- set color brown

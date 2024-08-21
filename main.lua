@@ -25,11 +25,20 @@ gardenItems = {}
 
 enemies = {}
 
+player = {}
+
 function love.load()
     gardenItems.flower1 = "src/sprites/flower_white_3x3.png"
     gardenItems.flower2 = "src/sprites/flower_yellow_3x3.png"
     gardenItems.flower3 = "src/sprites/sunflower_orange_4x4.png"
     gardenItems.flower4 = "src/sprites/sunflower_yellow_4x4.png"
+
+    player.x = 32
+    player.y = 32
+    player.dir = "down"
+    player.prevX = 0
+    player.prevY = 0
+    
 
     mower1 = "src/sprites/walk_behind_6x8-spritesheet.png"
     sprMower1 = maid64.newImage(mower1)
@@ -64,6 +73,32 @@ function love.load()
    
 end
 function love.update(dt)
+     -- Get the current mouse position
+    local mouseX = maid64.mouse.getX()
+    local mouseY = maid64.mouse.getY()
+ 
+    player.x = mouseX
+    player.y = mouseY
+    -- Determine the direction of movement
+    if mouseX > player.prevX then
+        player.dir = "right"
+    elseif mouseX < player.prevX then
+        player.dir = "left"
+    elseif mouseY > player.prevY then
+        player.dir = "down"
+    elseif mouseY < player.prevY then
+        player.dir = "up"
+    end
+
+    -- Update previous mouse position
+    player.prevX = mouseX
+    player.prevY = mouseY
+    print(player.dir)
+    --player.dir = "down" default
+    --if moving the mouse to the right dir = "right"
+    --if moving the mouse to the left dir = "left"
+    --if moving the mouse up dir = "up" 
+    --if moving the mouse down dir = "down" 
     mowerAnimation:update(dt)
     rotate = rotate + 0.007
 
@@ -75,7 +110,28 @@ end
 function love.draw()
     
     maid64.start()--starts the maid64 process
-    mowerAnimation:draw(sprMower1, 32, 32)
+    -- my sprite is 6x8 and is a lawn mower facing down, so the part mowing the lawn is in the bottom of the sprite.
+    -- the below sort of works, but the sprite easily fips
+    local sy = 1
+    local degress = 1
+    if player.dir == "up" then
+        sy = -1
+        degress = nil
+    -- else
+    --     sy = 1
+    elseif player.dir == "right" then
+        degress = math.rad(270)
+        sy = 1
+    elseif player.dir == "left" then
+        degress = math.rad(90)
+        sy = 1
+    elseif player.dir == "down" then
+        degress = nil
+        sy = 1
+    end
+
+    mowerAnimation:draw(sprMower1, player.x, player.y,  degress, sy)
+    
     for key, snail in pairs(enemies) do
         -- set color brown
         love.graphics.setColor(171/255, 82/255, 54/255) 

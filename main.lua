@@ -2,6 +2,7 @@ if arg[2] == "debug" then
     require("lldebugger").start()
 end
 local maid64 = require "src/libs/maid64"
+local anim8 = require 'src/libs/anim8'
 
 local textInput = ""
 local text = ""
@@ -29,6 +30,11 @@ function love.load()
     gardenItems.flower2 = "src/sprites/flower_yellow_3x3.png"
     gardenItems.flower3 = "src/sprites/sunflower_orange_4x4.png"
     gardenItems.flower4 = "src/sprites/sunflower_yellow_4x4.png"
+
+    mower1 = "src/sprites/walk_behind_6x8-spritesheet.png"
+    sprMower1 = maid64.newImage(mower1)
+    mowerGrid = anim8.newGrid(6, 8, sprMower1:getWidth(), sprMower1:getHeight())
+    mowerAnimation = anim8.newAnimation(mowerGrid('1-4',1), 0.1)
 
     love.graphics.setBackgroundColor( 0/255, 135/255, 81/255)
     love.window.setTitle( 'snailMower1700' )
@@ -58,6 +64,7 @@ function love.load()
    
 end
 function love.update(dt)
+    mowerAnimation:update(dt)
     rotate = rotate + 0.007
 
     for key, snail in pairs(enemies) do
@@ -68,6 +75,7 @@ end
 function love.draw()
     
     maid64.start()--starts the maid64 process
+    mowerAnimation:draw(sprMower1, 32, 32)
     for key, snail in pairs(enemies) do
         -- set color brown
         love.graphics.setColor(171/255, 82/255, 54/255) 

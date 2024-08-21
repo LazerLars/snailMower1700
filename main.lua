@@ -72,22 +72,35 @@ function love.load()
     -- love.keyboard.setKeyRepeat(true)
    
 end
+
+local speed = 35  -- Adjust this value as needed (pixels per second)
+
 function love.update(dt)
-     -- Get the current mouse position
+    -- Get the current mouse position
     local mouseX = maid64.mouse.getX()
     local mouseY = maid64.mouse.getY()
- 
-    player.x = mouseX
-    player.y = mouseY
+
+    -- Calculate the direction to the mouse position
+    local dx = mouseX - player.x
+    local dy = mouseY - player.y
+    local distance = math.sqrt(dx * dx + dy * dy)  -- Calculate the distance to the mouse
+
     -- Determine the direction of movement
-    -- if mouseX > player.prevX then
-    --     player.dir = "right"
-    -- elseif mouseX < player.prevX then
-    --     player.dir = "left"
     if mouseY > player.prevY then
         player.dir = "down"
     elseif mouseY < player.prevY then
         player.dir = "up"
+    end
+
+    -- Move the player towards the mouse position with the specified speed
+    if distance > 0 then
+        -- Normalize the direction vector
+        dx = dx / distance
+        dy = dy / distance
+
+        -- Move the player towards the mouse position
+        player.x = player.x + dx * speed * dt
+        player.y = player.y + dy * speed * dt
     end
 
     -- Update previous mouse position

@@ -59,11 +59,31 @@ function love.load()
 end
 function love.update(dt)
     rotate = rotate + 0.007
+
+    for key, snail in pairs(enemies) do
+        snail.y = snail.y - dt
+        snail.lifeDuration = snail.lifeDuration + dt
+    end
 end
 function love.draw()
     
     maid64.start()--starts the maid64 process
-
+    for key, snail in pairs(enemies) do
+        -- set color brown
+        love.graphics.setColor(171/255, 82/255, 54/255) 
+        love.graphics.rectangle('fill', snail.x, snail.y, 1,1)
+        -- reset color to default
+        if snail.lifeDuration >= 2 then 
+            love.graphics.rectangle('fill', snail.x, snail.y-1, 1,1)
+        end 
+        if snail.lifeDuration >= 5 then
+            love.graphics.rectangle('fill', snail.x, snail.y-2, 1,1)
+        end
+        if snail.lifeDuration >= 10 then
+            love.graphics.rectangle('fill', snail.x, snail.y-3, 1,1)
+        end
+        love.graphics.setColor(1,1,1) 
+    end
     --draw images here
     
     --can also draw shapes and get mouse position
@@ -101,7 +121,9 @@ function love.textinput(t)
 end
 
 function love.keypressed(key)
-    
+    if key == 'e' then
+        add_snail()
+    end
     -- toggle fullscreen
     if key == 'f11' then
         if settings.fullscreen == false then
@@ -113,4 +135,18 @@ function love.keypressed(key)
             settings.fullscreen = false
         end 
     end
+end
+
+function add_snail()
+    math.randomseed( os.time() )
+
+    local x = math.random(1,64); math.random(1,64); math.random(1,64)
+    print(x)
+    snail = {}
+    snail.x = x
+    snail.y = settings.screenHeight - 3
+    snail.speed = 10
+    snail.lifeDuration = 0
+
+    table.insert(enemies, snail)
 end

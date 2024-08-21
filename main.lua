@@ -20,7 +20,16 @@ local settings = {
     screenHeight = 64
 }
 
+gardenItems = {}
+
+enemies = {}
+
 function love.load()
+    gardenItems.flower1 = "src/sprites/flower_white_3x3.png"
+    gardenItems.flower2 = "src/sprites/flower_yellow_3x3.png"
+    gardenItems.flower3 = "src/sprites/sunflower_orange_4x4.png"
+    gardenItems.flower4 = "src/sprites/sunflower_yellow_4x4.png"
+
     love.graphics.setBackgroundColor( 0/255, 135/255, 81/255)
     love.window.setTitle( 'snailMower1700' )
     --optional settings for window
@@ -38,8 +47,10 @@ function love.load()
     
     -- create test sprite
     --maid = maid64.newImage("maid64.png")
-    
-
+    flower1 = maid64.newImage(gardenItems.flower1)
+    flower2 = maid64.newImage(gardenItems.flower2)
+    flower3 = maid64.newImage(gardenItems.flower3)
+    flower4 = maid64.newImage(gardenItems.flower4)
     rotate = 0
 
     -- enable key repeat so backspace can be held down to trigger love.keypressed multiple times.
@@ -57,11 +68,23 @@ function love.draw()
     
     --can also draw shapes and get mouse position
     love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 1)
-    love.graphics.print(maid64.mouse.getX() ..  "," ..  maid64.mouse.getY(), 1,1)
+    -- love.graphics.print(maid64.mouse.getX() ..  "," ..  maid64.mouse.getY(), 1,1)
     
-    
-
-
+    love.graphics.draw(flower3, 1, 2)
+    love.graphics.draw(flower1, 1, 7)
+    love.graphics.draw(flower2, 6, 3)
+    love.graphics.draw(flower4, 12, 4)
+    love.graphics.draw(flower1, 17, 7)
+    love.graphics.draw(flower2, 18, 3)
+    love.graphics.draw(flower2, 22, 4)
+    love.graphics.draw(flower2, 26, 7)
+    love.graphics.draw(flower1, 28, 3)
+    love.graphics.draw(flower3, 36, 3)
+    love.graphics.draw(flower1, 41, 3)
+    love.graphics.draw(flower1, 44, 5)
+    love.graphics.draw(flower4, 48, 2)
+    love.graphics.draw(flower3, 53, 5)
+    love.graphics.draw(flower2, 56, 1)
     --love.graphics.draw(spr_inLove2d,sceenWidth/2,screenHeight/2,rotate,3,3,32,32)
     -- love.graphics.draw(spr_inLove2d, settings.sceenWidth/2, settings.screenHeight/2, rotate, 1, 1, spr_inLove2d:getWidth()/2, spr_inLove2d:getHeight()/2)
 

@@ -80,11 +80,11 @@ function love.update(dt)
     player.x = mouseX
     player.y = mouseY
     -- Determine the direction of movement
-    if mouseX > player.prevX then
-        player.dir = "right"
-    elseif mouseX < player.prevX then
-        player.dir = "left"
-    elseif mouseY > player.prevY then
+    -- if mouseX > player.prevX then
+    --     player.dir = "right"
+    -- elseif mouseX < player.prevX then
+    --     player.dir = "left"
+    if mouseY > player.prevY then
         player.dir = "down"
     elseif mouseY < player.prevY then
         player.dir = "up"
@@ -119,12 +119,12 @@ function love.draw()
         degress = nil
     -- else
     --     sy = 1
-    elseif player.dir == "right" then
-        degress = math.rad(270)
-        sy = 1
-    elseif player.dir == "left" then
-        degress = math.rad(90)
-        sy = 1
+    -- elseif player.dir == "right" then
+    --     degress = math.rad(270)
+    --     sy = 1
+    -- elseif player.dir == "left" then
+    --     degress = math.rad(90)
+    --     sy = 1
     elseif player.dir == "down" then
         degress = nil
         sy = 1

@@ -76,37 +76,7 @@ end
 local speed = 17  -- Adjust this value as needed (pixels per second)
 
 function love.update(dt)
-    -- Get the current mouse position
-    local mouseX = maid64.mouse.getX()
-    local mouseY = maid64.mouse.getY()
-
-    -- Calculate the direction to the mouse position
-    local dx = mouseX - player.x
-    local dy = mouseY - player.y
-    local distance = math.sqrt(dx * dx + dy * dy)  -- Calculate the distance to the mouse
-
-    -- Determine the direction of movement
-    if mouseY > player.prevY then
-        player.dir = "down"
-    elseif mouseY < player.prevY then
-        player.dir = "up"
-    end
-
-    -- Move the player towards the mouse position with the specified speed
-    if distance > 0 then
-        -- Normalize the direction vector
-        dx = dx / distance
-        dy = dy / distance
-
-        -- Move the player towards the mouse position
-        player.x = player.x + dx * speed * dt
-        player.y = player.y + dy * speed * dt
-    end
-
-    -- Update previous mouse position
-    player.prevX = mouseX
-    player.prevY = mouseY
-    print(player.dir)
+   
     --player.dir = "down" default
     --if moving the mouse to the right dir = "right"
     --if moving the mouse to the left dir = "left"
@@ -136,12 +106,12 @@ function love.draw()
     elseif player.dir == "down" then
         sy = 1   -- No flip
         degress = nil
-    -- elseif player.dir == "right" then
-    --     degress = math.rad(270)  -- Rotate 270 degrees
-    --     sy = 1   -- No flip
-    -- elseif player.dir == "left" then
-    --     degress = math.rad(90)   -- Rotate 90 degrees
-    --     sy = 1   -- No flip
+    elseif player.dir == "right" then
+        degress = math.rad(270)  -- Rotate 270 degrees
+        sy = 1   -- No flip
+    elseif player.dir == "left" then
+        degress = math.rad(90)   -- Rotate 90 degrees
+        sy = 1   -- No flip
     end
 
     -- Draw the mower animation with the correct transformations
@@ -166,7 +136,7 @@ function love.draw()
     --draw images here
     
     --can also draw shapes and get mouse position
-    love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 1)
+    -- love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 1)
     -- love.graphics.print(maid64.mouse.getX() ..  "," ..  maid64.mouse.getY(), 1,1)
     
     love.graphics.draw(flower3, 1, 2)
@@ -203,6 +173,7 @@ function love.keypressed(key)
     if key == 'e' then
         add_snail()
     end
+
     -- toggle fullscreen
     if key == 'f11' then
         if settings.fullscreen == false then
@@ -228,4 +199,42 @@ function add_snail()
     snail.lifeDuration = 0
 
     table.insert(enemies, snail)
+end
+
+function move_mower_with_mouse()
+    -- Get the current mouse position
+    local mouseX = maid64.mouse.getX()
+    local mouseY = maid64.mouse.getY()
+
+    -- Calculate the direction to the mouse position
+    local dx = mouseX - player.x
+    local dy = mouseY - player.y
+    local distance = math.sqrt(dx * dx + dy * dy)  -- Calculate the distance to the mouse
+
+    -- Determine the direction of movement
+    if mouseY > player.prevY then
+        player.dir = "down"
+    elseif mouseY < player.prevY then
+        player.dir = "up"
+    elseif mouseX > player.prevX then
+        player.dir = "right"
+    elseif mouseX > player.prevY then
+        player.dir = "left"
+    end
+
+    -- Move the player towards the mouse position with the specified speed
+    if distance > 0 then
+        -- Normalize the direction vector
+        dx = dx / distance
+        dy = dy / distance
+
+        -- Move the player towards the mouse position
+        player.x = player.x + dx * speed * dt
+        player.y = player.y + dy * speed * dt
+    end
+
+    -- Update previous mouse position
+    player.prevX = mouseX
+    player.prevY = mouseY
+    print(player.dir)
 end

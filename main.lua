@@ -60,6 +60,8 @@ function love.load()
     -- Load the sound file
     mowerSound = love.audio.newSource("src/sfx/mower_driving_04.mp3", "static")
     mowerSound:setLooping(true) -- Set the sound to loop
+    mowerStart = love.audio.newSource("src/sfx/mower_starting_00.mp3", "static")
+    love.audio.play(mowerStart)
 
     love.graphics.setBackgroundColor( 0/255, 135/255, 81/255)
     love.window.setTitle( 'snailMower1700' )

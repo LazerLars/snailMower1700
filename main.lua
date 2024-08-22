@@ -45,6 +45,8 @@ function love.load()
     player.animations = {}
     player.spritesheet = "src/sprites/mower_4x4-Sheet.png"
     player.sprite = maid64.newImage(player.spritesheet)
+    player.width = 4
+    player.height = 4
     player.grids = {}
     player.grids.mowerGrid = anim8.newGrid(4, 4, player.sprite:getWidth(), player.sprite:getHeight())
     player.animations.drive = anim8.newAnimation(player.grids.mowerGrid('1-6',1), 0.1)
@@ -135,6 +137,13 @@ function love.update(dt)
 
             local addIncementTime = math.random(1,5); math.random(1,5); math.random(1,5)
             snail.addDotIncementer = snail.addDotIncementer + addIncementTime
+        end
+    end
+
+    for key, snail in pairs(enemies) do
+        if checkCollision(player, snail, player.originX, player.originY) then
+            print(key, "snail is colliding with player")
+            table.remove(enemies, key)
         end
     end
 end
@@ -232,14 +241,22 @@ function add_snail()
     x = math.random(1,64); 
     x = math.random(1,64)
     x = math.random(1,64)
+
+    local y = math.random(50, settings.screenHeight - 3)
+    y = math.random(50, settings.screenHeight - 3)
+    y = math.random(50, settings.screenHeight - 3)
+    y = math.random(50, settings.screenHeight - 3)
+
     print(x)
     snail = {}
     snail.x = x
-    snail.y = settings.screenHeight - 3
+    snail.y = y
     snail.speed = 10
     snail.timer = 0
     snail.addDotIncementer = 2
     snail.dots = 1
+    snail.width = 1
+    snail.height = snail.dots
 
     table.insert(enemies, snail)
 end

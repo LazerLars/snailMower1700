@@ -22,6 +22,7 @@ local settings = {
 }
 
 showHitBoxes = false
+developerMode = false
 
 gardenItems = {}
 
@@ -30,6 +31,9 @@ enemies = {}
 sounds = {}
 
 player = {}
+
+timers = {}
+
 
 function love.load()
     math.randomseed( os.time() )
@@ -58,6 +62,11 @@ function love.load()
     player.originX = 2
     player.originY = 2
     player.degrees = nil
+
+    timers.enemySpawn = {}
+    timers.enemySpawn.timer = 0
+    timers.enemySpawn.nextEnemy = 1
+
 
     sounds.splatter = {} -- add all sounds which are in src/sfx/splatter/
 
@@ -120,6 +129,15 @@ end
 
 
 function love.update(dt)
+    timers.enemySpawn.timer = timers.enemySpawn.timer + dt
+    if timers.enemySpawn.nextEnemy >= timers.enemySpawn.timer then
+        add_snail()
+        timers.enemySpawn.timer = 0
+        timers.enemySpawn.nextEnemy = timers.enemySpawn.nextEnemy - 0.1
+        if timers.enemySpawn.nextEnemy <= 0.5 then
+            timers.enemySpawn.nextEnemy = 1
+        end
+    end
     -- Check if mowerStart has finished playing
     if not mowerStart:isPlaying() and not mowerStartFinished then
         mowerStartFinished = true
@@ -244,10 +262,15 @@ function love.draw()
         love.graphics.rectangle('line', player.x-player.originX, player.y-player.originY, 4, 4)
     end
     
-    --can also draw shapes and get mouse position
-    love.graphics.rectangle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 1,1)
-    love.graphics.print(maid64.mouse.getX() ..  "," ..  maid64.mouse.getY(), 44,58)
-    love.graphics.print(math.floor(player.x-player.originX) ..  "," .. math.floor(player.y-player.originY), 1,58)
+   
+    if developerMode == true then
+    
+        love.graphics.print(maid64.mouse.getX() ..  "," ..  maid64.mouse.getY(), 44,58)
+        love.graphics.print(math.floor(player.x-player.originX) ..  "," .. math.floor(player.y-player.originY), 1,58)
+         --can also draw shapes and get mouse position
+        love.graphics.rectangle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 1,1)
+    end
+    
     
     love.graphics.draw(flower3, 1, 2)
     love.graphics.draw(flower1, 1, 7)

@@ -58,7 +58,7 @@ function love.load()
     player.degrees = nil
     
     -- Load the sound file
-    mowerSound = love.audio.newSource("src/sfx/mower_driving_01.mp3", "static")
+    mowerSound = love.audio.newSource("src/sfx/mower_driving_04.mp3", "static")
     mowerSound:setLooping(true) -- Set the sound to loop
 
     love.graphics.setBackgroundColor( 0/255, 135/255, 81/255)

@@ -21,6 +21,8 @@ local settings = {
     screenHeight = 64
 }
 
+showHitBoxes = false
+
 gardenItems = {}
 
 enemies = {}
@@ -48,16 +50,9 @@ function love.load()
     player.animations.idle = anim8.newAnimation(player.grids.mowerGrid('1-1',1), 0.1)
     player.animations.handleBar = anim8.newAnimation(player.grids.mowerGrid('1-1',2), 0.1)
     player.animationSelected = player.animations.idle
-    -- mower1 = "src/sprites/walk_behind_6x8-spritesheet.png"
-    -- mower1_hitbox = "src/sprites/hitBox_mower.png"
-    -- mower1_hitbox = "src/sprites/hitBox_mower_1.png"
-    -- mower1 = "src/sprites/mower_4x4-Sheet.png"
-    -- sprMower1 = maid64.newImage(mower1)
-    -- -- sprMower1HitBox = maid64.newImage(mower1_hitbox)
-    -- mowerDriveAnamation = anim8.newGrid(4, 4, sprMower1:getWidth(), sprMower1:getHeight())
-    -- mowerAnimationDrive = anim8.newAnimation(mowerGrid('1-6',1), 0.1)
-    
-    -- mowerAnimationIdle = anim8.newAnimation(mowerGrid('1-1',1), 0.1)
+    player.originX = 2
+    player.originY = 2
+    player.degrees = nil
 
     love.graphics.setBackgroundColor( 0/255, 135/255, 81/255)
     love.window.setTitle( 'snailMower1700' )
@@ -88,7 +83,6 @@ function love.load()
 end
 
 
-
 function love.update(dt)
     local isMoving = false
     if love.keyboard.isDown("w") then
@@ -96,24 +90,28 @@ function love.update(dt)
         player.dir = "up"
         player.animationSelected = player.animations.drive
         isMoving = true
+        player.degrees = math.rad(180) -- flip the sprite
     end
     if love.keyboard.isDown("s") then
         player.y = player.y + player.speed * dt
         player.dir = "down"
         player.animationSelected = player.animations.drive
         isMoving = true
+        player.degrees = nil
     end
     if love.keyboard.isDown("a") then
         player.x = player.x - player.speed * dt
         player.dir = "left"
         player.animationSelected = player.animations.drive
         isMoving = true
+        player.degrees = math.rad(90)  -- flip the sprite left
     end
     if love.keyboard.isDown("d") then
         player.x = player.x + player.speed * dt
         player.dir = "right"
         player.animationSelected = player.animations.drive
         isMoving = true
+        player.degrees = math.rad(270) -- flip the sprite right
     end
 
     if isMoving == false then
@@ -155,38 +153,17 @@ function love.draw()
         love.graphics.setColor(1,1,1) 
     end
 
-    -- my sprite is 6x8 and is a lawn mower facing down, so the part mowing the lawn is in the bottom of the sprite.
-    -- the below sort of works, but the sprite easily fips
-    local degress = nil  -- Rotation in radians (if any)
-    local sy = 1         -- Scale Y (flipping vertically)
-    local originX = 2    -- Origin X (center of 6px width)
-    local originY = 2    -- Origin Y (center of 8px height)
-
-    if player.dir == "up" then
-        sy = -1  -- Flip vertically
-        degress = math.rad(180)
-    elseif player.dir == "down" then
-        sy = 1   -- No flip
-        degress = nil
-    elseif player.dir == "right" then
-        degress = math.rad(270)  -- Rotate 270 degrees
-        sy = 1   -- No flip
-    elseif player.dir == "left" then
-        degress = math.rad(90)   -- Rotate 90 degrees
-        sy = 1   -- No flip
-    end
-
     -- Draw the mower animation with the correct transformations
-    player.animationSelected:draw(player.sprite, player.x, player.y, degress, nil, nil, originX, originY)
+    player.animationSelected:draw(player.sprite, player.x, player.y, player.degrees, nil, nil, player.originX, player.originY)
     -- mowerAnimationIdle:draw(sprMower1, player.x, player.y, degress, nil, nil, originX, originY)
     love.graphics.setLineStyle('rough')
     -- hit box mower
-    -- love.graphics.rectangle('line', player.x-originX, player.y-originY, 4, 4)
+    if showHitBoxes == true then        
+        love.graphics.rectangle('line', player.x-player.originX, player.y-player.originY, 4, 4)
+    end
     
     -- mowerAnimation:draw(sprMower1, player.x, player.y, math.rad(-180), nil, nil, originX, originY)
-    
-    
-    print(math.floor(player.x-originX), math.floor(player.y-originY))
+
     -- collision box
     -- left 
     -- x
@@ -259,6 +236,15 @@ end
 function love.keypressed(key)
     if key == 'e' then
         add_snail()
+    end
+
+    if key == "escape" then
+        if showHitBoxes == true then
+            showHitBoxes = false
+        elseif showHitBoxes == false then
+            showHitBoxes = true
+        end
+
     end
 
     -- toggle fullscreen

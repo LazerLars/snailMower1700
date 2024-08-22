@@ -38,6 +38,7 @@ function love.load()
     player.dir = "down"
     player.prevX = 0
     player.prevY = 0
+    player.speed = 17
     
 
     mower1 = "src/sprites/walk_behind_6x8-spritesheet.png"
@@ -73,26 +74,26 @@ function love.load()
    
 end
 
-local speed = 17  -- Adjust this value as needed (pixels per second)
+
 
 function love.update(dt)
     if love.keyboard.isDown("w") then
-        player.y = player.y - speed * dt
+        player.y = player.y - player.speed * dt
         player.dir = "up"
     end
     if love.keyboard.isDown("s") then
-        player.y = player.y + speed * dt
+        player.y = player.y + player.speed * dt
         player.dir = "down"
     end
     if love.keyboard.isDown("a") then
-        player.x = player.x - speed * dt
+        player.x = player.x - player.speed * dt
         player.dir = "left"
     end
     if love.keyboard.isDown("d") then
-        player.x = player.x + speed * dt
+        player.x = player.x + player.speed * dt
         player.dir = "right"
     end
-
+    
     --player.dir = "down" default
     --if moving the mouse to the right dir = "right"
     --if moving the mouse to the left dir = "left"
@@ -109,6 +110,24 @@ end
 function love.draw()
     
     maid64.start()--starts the maid64 process
+
+    for key, snail in pairs(enemies) do
+        -- set color brown
+        love.graphics.setColor(171/255, 82/255, 54/255) 
+        love.graphics.rectangle('fill', snail.x, snail.y, 1,1)
+        -- reset color to default
+        if snail.lifeDuration >= 2 then 
+            love.graphics.rectangle('fill', snail.x, snail.y-1, 1,1)
+        end 
+        if snail.lifeDuration >= 5 then
+            love.graphics.rectangle('fill', snail.x, snail.y-2, 1,1)
+        end
+        if snail.lifeDuration >= 10 then
+            love.graphics.rectangle('fill', snail.x, snail.y-3, 1,1)
+        end
+        love.graphics.setColor(1,1,1) 
+    end
+
     -- my sprite is 6x8 and is a lawn mower facing down, so the part mowing the lawn is in the bottom of the sprite.
     -- the below sort of works, but the sprite easily fips
     local degress = nil  -- Rotation in radians (if any)
@@ -133,27 +152,13 @@ function love.draw()
     -- Draw the mower animation with the correct transformations
     mowerAnimation:draw(sprMower1, player.x, player.y, degress, 1, sy, originX, originY)
     
-    for key, snail in pairs(enemies) do
-        -- set color brown
-        love.graphics.setColor(171/255, 82/255, 54/255) 
-        love.graphics.rectangle('fill', snail.x, snail.y, 1,1)
-        -- reset color to default
-        if snail.lifeDuration >= 2 then 
-            love.graphics.rectangle('fill', snail.x, snail.y-1, 1,1)
-        end 
-        if snail.lifeDuration >= 5 then
-            love.graphics.rectangle('fill', snail.x, snail.y-2, 1,1)
-        end
-        if snail.lifeDuration >= 10 then
-            love.graphics.rectangle('fill', snail.x, snail.y-3, 1,1)
-        end
-        love.graphics.setColor(1,1,1) 
-    end
+
     --draw images here
     
     --can also draw shapes and get mouse position
-    -- love.graphics.circle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 1)
-    -- love.graphics.print(maid64.mouse.getX() ..  "," ..  maid64.mouse.getY(), 1,1)
+    love.graphics.rectangle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 1,1)
+    love.graphics.print(maid64.mouse.getX() ..  "," ..  maid64.mouse.getY(), 44,58)
+    love.graphics.print(math.floor(player.x) ..  "," .. math.floor(player.y), 1,58)
     
     love.graphics.draw(flower3, 1, 2)
     love.graphics.draw(flower1, 1, 7)

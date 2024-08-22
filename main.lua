@@ -39,10 +39,16 @@ function love.load()
     player.prevX = 0
     player.prevY = 0
     player.speed = 17
+    player.hitBox = {}
+    player.hitBox.x = 6
+    player.hitBox.y = 4
     
 
     mower1 = "src/sprites/walk_behind_6x8-spritesheet.png"
+    mower1_hitbox = "src/sprites/hitBox_mower.png"
+    mower1_hitbox = "src/sprites/hitBox_mower_1.png"
     sprMower1 = maid64.newImage(mower1)
+    sprMower1HitBox = maid64.newImage(mower1_hitbox)
     mowerGrid = anim8.newGrid(6, 8, sprMower1:getWidth(), sprMower1:getHeight())
     mowerAnimation = anim8.newAnimation(mowerGrid('1-4',1), 0.1)
 
@@ -110,7 +116,6 @@ end
 function love.draw()
     
     maid64.start()--starts the maid64 process
-
     for key, snail in pairs(enemies) do
         -- set color brown
         love.graphics.setColor(171/255, 82/255, 54/255) 
@@ -151,7 +156,14 @@ function love.draw()
 
     -- Draw the mower animation with the correct transformations
     mowerAnimation:draw(sprMower1, player.x, player.y, degress, 1, sy, originX, originY)
+    -- love.graphics.draw(sprMower1HitBox, player.x-(originX), player.y) -- down
+    love.graphics.draw(sprMower1HitBox, player.x, player.y, degress, 1, sy, originX, originY) -- down
+    print(player.x, player.y)
     
+    -- love.graphics.setColor(1,1,1)
+    -- love.graphics.rectangle('line', 50, 50, 2, 2)
+   
+    -- love.graphics.rectangle()
 
     --draw images here
     

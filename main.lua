@@ -82,7 +82,14 @@ function love.load()
     mowerSound:setLooping(true) -- Set the sound to loop
     mowerStart = love.audio.newSource("src/sfx/mower_starting_00.mp3", "static")
     love.audio.play(mowerStart)
+    mowerIdle = love.audio.newSource("src/sfx/idle_00.mp3", "static")
+     -- Set mowerIdle to loop
+     mowerIdle:setLooping(true)
 
+     -- Track whether mowerStart has finished playing
+    mowerStartFinished = false
+
+    --first allow loop of mowerIdle when mowerStart is done playing in the update function
     love.graphics.setBackgroundColor( 0/255, 135/255, 81/255)
     love.window.setTitle( 'snailMower1700' )
     --optional settings for window
@@ -113,6 +120,12 @@ end
 
 
 function love.update(dt)
+    -- Check if mowerStart has finished playing
+    if not mowerStart:isPlaying() and not mowerStartFinished then
+        mowerStartFinished = true
+        love.audio.play(mowerIdle)  -- Start playing idle sound when start sound finishes
+    end
+
     local isMoving = false
     -- loop this sound src\sfx\mower_driving_01.mp3 when wasd is pressed
     if love.keyboard.isDown("w") then
@@ -144,12 +157,24 @@ function love.update(dt)
         player.degrees = math.rad(270) -- flip the sprite right
     end
 
-    -- Play or stop the sound based on movement
+   -- Handle sound transitions based on movement
     if isMoving then
+        -- Stop idle sound if playing
+        if mowerIdle:isPlaying() then
+            love.audio.stop(mowerIdle)
+        end
+
+        -- Play the moving sound if not already playing
         if not mowerSound:isPlaying() then
             love.audio.play(mowerSound)
         end
     else
+        -- Play idle sound if the mower is not moving and the idle sound is not already playing
+        if not mowerIdle:isPlaying() and mowerStartFinished then
+            love.audio.play(mowerIdle)
+        end
+
+        -- Stop moving sound if it's still playing
         if mowerSound:isPlaying() then
             love.audio.stop(mowerSound)
         end

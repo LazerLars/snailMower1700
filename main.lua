@@ -39,18 +39,25 @@ function love.load()
     player.prevX = 0
     player.prevY = 0
     player.speed = 17
-    player.hitBox = {}
-    player.hitBox.x = 6
-    player.hitBox.y = 4
+    player.animations = {}
+    player.spritesheet = "src/sprites/mower_4x4-Sheet.png"
+    player.sprite = maid64.newImage(player.spritesheet)
+    player.grids = {}
+    player.grids.mowerGrid = anim8.newGrid(4, 4, player.sprite:getWidth(), player.sprite:getHeight())
+    player.animations.drive = anim8.newAnimation(player.grids.mowerGrid('1-6',1), 0.1)
+    player.animations.idle = anim8.newAnimation(player.grids.mowerGrid('1-1',1), 0.1)
+    player.animations.handleBar = anim8.newAnimation(player.grids.mowerGrid('1-1',2), 0.1)
+    player.animationSelected = player.animations.idle
+    -- mower1 = "src/sprites/walk_behind_6x8-spritesheet.png"
+    -- mower1_hitbox = "src/sprites/hitBox_mower.png"
+    -- mower1_hitbox = "src/sprites/hitBox_mower_1.png"
+    -- mower1 = "src/sprites/mower_4x4-Sheet.png"
+    -- sprMower1 = maid64.newImage(mower1)
+    -- -- sprMower1HitBox = maid64.newImage(mower1_hitbox)
+    -- mowerDriveAnamation = anim8.newGrid(4, 4, sprMower1:getWidth(), sprMower1:getHeight())
+    -- mowerAnimationDrive = anim8.newAnimation(mowerGrid('1-6',1), 0.1)
     
-
-    mower1 = "src/sprites/walk_behind_6x8-spritesheet.png"
-    mower1_hitbox = "src/sprites/hitBox_mower.png"
-    mower1_hitbox = "src/sprites/hitBox_mower_1.png"
-    sprMower1 = maid64.newImage(mower1)
-    sprMower1HitBox = maid64.newImage(mower1_hitbox)
-    mowerGrid = anim8.newGrid(6, 8, sprMower1:getWidth(), sprMower1:getHeight())
-    mowerAnimation = anim8.newAnimation(mowerGrid('1-4',1), 0.1)
+    -- mowerAnimationIdle = anim8.newAnimation(mowerGrid('1-1',1), 0.1)
 
     love.graphics.setBackgroundColor( 0/255, 135/255, 81/255)
     love.window.setTitle( 'snailMower1700' )
@@ -83,30 +90,45 @@ end
 
 
 function love.update(dt)
+    local isMoving = false
     if love.keyboard.isDown("w") then
         player.y = player.y - player.speed * dt
         player.dir = "up"
+        player.animationSelected = player.animations.drive
+        isMoving = true
     end
     if love.keyboard.isDown("s") then
         player.y = player.y + player.speed * dt
         player.dir = "down"
+        player.animationSelected = player.animations.drive
+        isMoving = true
     end
     if love.keyboard.isDown("a") then
         player.x = player.x - player.speed * dt
         player.dir = "left"
+        player.animationSelected = player.animations.drive
+        isMoving = true
     end
     if love.keyboard.isDown("d") then
         player.x = player.x + player.speed * dt
         player.dir = "right"
+        player.animationSelected = player.animations.drive
+        isMoving = true
+    end
+
+    if isMoving == false then
+        player.animationSelected = player.animations.idle
     end
     
+    player.prevX = player.x
+    player.prevY = player.y
     --player.dir = "down" default
     --if moving the mouse to the right dir = "right"
     --if moving the mouse to the left dir = "left"
     --if moving the mouse up dir = "up" 
     --if moving the mouse down dir = "down" 
-    mowerAnimation:update(dt)
-    rotate = rotate + 0.007
+    player.animationSelected:update(dt)
+    
 
     for key, snail in pairs(enemies) do
         snail.y = snail.y - dt
@@ -137,12 +159,12 @@ function love.draw()
     -- the below sort of works, but the sprite easily fips
     local degress = nil  -- Rotation in radians (if any)
     local sy = 1         -- Scale Y (flipping vertically)
-    local originX = 3    -- Origin X (center of 6px width)
-    local originY = 4    -- Origin Y (center of 8px height)
+    local originX = 2    -- Origin X (center of 6px width)
+    local originY = 2    -- Origin Y (center of 8px height)
 
     if player.dir == "up" then
         sy = -1  -- Flip vertically
-        degress = nil
+        degress = math.rad(180)
     elseif player.dir == "down" then
         sy = 1   -- No flip
         degress = nil
@@ -155,10 +177,16 @@ function love.draw()
     end
 
     -- Draw the mower animation with the correct transformations
-    mowerAnimation:draw(sprMower1, player.x, player.y, degress, 1, sy, originX, originY)
-    -- love.graphics.draw(sprMower1HitBox, player.x-(originX), player.y) -- down
-    love.graphics.draw(sprMower1HitBox, player.x, player.y, degress, 1, sy, originX, originY) -- down
-    print(math.floor(player.x), math.floor(player.y))
+    player.animationSelected:draw(player.sprite, player.x, player.y, degress, nil, nil, originX, originY)
+    -- mowerAnimationIdle:draw(sprMower1, player.x, player.y, degress, nil, nil, originX, originY)
+    love.graphics.setLineStyle('rough')
+    -- hit box mower
+    -- love.graphics.rectangle('line', player.x-originX, player.y-originY, 4, 4)
+    
+    -- mowerAnimation:draw(sprMower1, player.x, player.y, math.rad(-180), nil, nil, originX, originY)
+    
+    
+    print(math.floor(player.x-originX), math.floor(player.y-originY))
     -- collision box
     -- left 
     -- x

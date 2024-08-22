@@ -40,7 +40,7 @@ function love.load()
     player.dir = "down"
     player.prevX = 0
     player.prevY = 0
-    player.speed = 17
+    player.speed = 12
     player.animations = {}
     player.spritesheet = "src/sprites/mower_4x4-Sheet.png"
     player.sprite = maid64.newImage(player.spritesheet)
@@ -155,6 +155,7 @@ function love.draw()
 
     -- Draw the mower animation with the correct transformations
     player.animationSelected:draw(player.sprite, player.x, player.y, player.degrees, nil, nil, player.originX, player.originY)
+    player.animations.handleBar:draw(player.sprite, player.x, player.y, player.degrees, nil, nil, 2, 6)
     -- mowerAnimationIdle:draw(sprMower1, player.x, player.y, degress, nil, nil, originX, originY)
     love.graphics.setLineStyle('rough')
     -- hit box mower
@@ -201,7 +202,7 @@ function love.draw()
     --can also draw shapes and get mouse position
     love.graphics.rectangle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 1,1)
     love.graphics.print(maid64.mouse.getX() ..  "," ..  maid64.mouse.getY(), 44,58)
-    love.graphics.print(math.floor(player.x) ..  "," .. math.floor(player.y), 1,58)
+    love.graphics.print(math.floor(player.x-player.originX) ..  "," .. math.floor(player.y-player.originY), 1,58)
     
     love.graphics.draw(flower3, 1, 2)
     love.graphics.draw(flower1, 1, 7)
@@ -270,6 +271,7 @@ function add_snail()
     snail.y = settings.screenHeight - 3
     snail.speed = 10
     snail.lifeDuration = 0
+    snail.dots = 1
 
     table.insert(enemies, snail)
 end

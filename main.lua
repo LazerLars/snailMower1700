@@ -158,7 +158,33 @@ function love.draw()
     mowerAnimation:draw(sprMower1, player.x, player.y, degress, 1, sy, originX, originY)
     -- love.graphics.draw(sprMower1HitBox, player.x-(originX), player.y) -- down
     love.graphics.draw(sprMower1HitBox, player.x, player.y, degress, 1, sy, originX, originY) -- down
-    print(player.x, player.y)
+    print(math.floor(player.x), math.floor(player.y))
+    -- collision box
+    -- left 
+    -- x
+    -- x-3
+    -- y+2
+    -- y-3
+
+    -- right
+    -- x+1
+    -- x+3
+    -- y-3
+    -- y+2
+
+    -- down
+    -- x-2
+    -- x+3
+    -- y
+    -- y+3
+
+    -- up
+    -- x+2
+    -- x-3
+    -- y-3
+
+
+
     
     -- love.graphics.setColor(1,1,1)
     -- love.graphics.rectangle('line', 50, 50, 2, 2)

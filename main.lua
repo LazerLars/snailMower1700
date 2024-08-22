@@ -30,6 +30,7 @@ enemies = {}
 player = {}
 
 function love.load()
+    math.randomseed( os.time() )
     gardenItems.flower1 = "src/sprites/flower_white_3x3.png"
     gardenItems.flower2 = "src/sprites/flower_yellow_3x3.png"
     gardenItems.flower3 = "src/sprites/sunflower_orange_4x4.png"
@@ -120,17 +121,21 @@ function love.update(dt)
     
     player.prevX = player.x
     player.prevY = player.y
-    --player.dir = "down" default
-    --if moving the mouse to the right dir = "right"
-    --if moving the mouse to the left dir = "left"
-    --if moving the mouse up dir = "up" 
-    --if moving the mouse down dir = "down" 
+ 
     player.animationSelected:update(dt)
     
 
     for key, snail in pairs(enemies) do
         snail.y = snail.y - dt
-        snail.lifeDuration = snail.lifeDuration + dt
+        snail.timer = snail.timer + dt
+        if snail.timer >= snail.addDotIncementer then
+            snail.dots = snail.dots + 1
+            snail.timer = 0
+            
+
+            local addIncementTime = math.random(1,5); math.random(1,5); math.random(1,5)
+            snail.addDotIncementer = snail.addDotIncementer + addIncementTime
+        end
     end
 end
 function love.draw()
@@ -139,17 +144,12 @@ function love.draw()
     for key, snail in pairs(enemies) do
         -- set color brown
         love.graphics.setColor(171/255, 82/255, 54/255) 
-        love.graphics.rectangle('fill', snail.x, snail.y, 1,1)
+        -- love.graphics.rectangle('fill', snail.x, snail.y, 1,1)
         -- reset color to default
-        if snail.lifeDuration >= 2 then 
-            love.graphics.rectangle('fill', snail.x, snail.y-1, 1,1)
-        end 
-        if snail.lifeDuration >= 5 then
-            love.graphics.rectangle('fill', snail.x, snail.y-2, 1,1)
+        for i = 1, snail.dots, 1 do
+            love.graphics.rectangle('fill', snail.x, snail.y+i, 1,1)
         end
-        if snail.lifeDuration >= 10 then
-            love.graphics.rectangle('fill', snail.x, snail.y-3, 1,1)
-        end
+       
         love.graphics.setColor(1,1,1) 
     end
 
@@ -264,13 +264,17 @@ end
 function add_snail()
     math.randomseed( os.time() )
 
-    local x = math.random(1,64); math.random(1,64); math.random(1,64)
+    local x = math.random(1,64); 
+    x = math.random(1,64); 
+    x = math.random(1,64)
+    x = math.random(1,64)
     print(x)
     snail = {}
     snail.x = x
     snail.y = settings.screenHeight - 3
     snail.speed = 10
-    snail.lifeDuration = 0
+    snail.timer = 0
+    snail.addDotIncementer = 2
     snail.dots = 1
 
     table.insert(enemies, snail)

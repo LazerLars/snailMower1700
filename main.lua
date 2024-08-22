@@ -163,42 +163,6 @@ function love.draw()
         love.graphics.rectangle('line', player.x-player.originX, player.y-player.originY, 4, 4)
     end
     
-    -- mowerAnimation:draw(sprMower1, player.x, player.y, math.rad(-180), nil, nil, originX, originY)
-
-    -- collision box
-    -- left 
-    -- x
-    -- x-3
-    -- y+2
-    -- y-3
-
-    -- right
-    -- x+1
-    -- x+3
-    -- y-3
-    -- y+2
-
-    -- down
-    -- x-2
-    -- x+3
-    -- y
-    -- y+3
-
-    -- up
-    -- x+2
-    -- x-3
-    -- y-3
-
-
-
-    
-    -- love.graphics.setColor(1,1,1)
-    -- love.graphics.rectangle('line', 50, 50, 2, 2)
-   
-    -- love.graphics.rectangle()
-
-    --draw images here
-    
     --can also draw shapes and get mouse position
     love.graphics.rectangle("fill", maid64.mouse.getX(),  maid64.mouse.getY(), 1,1)
     love.graphics.print(maid64.mouse.getX() ..  "," ..  maid64.mouse.getY(), 44,58)
@@ -316,4 +280,32 @@ function move_mower_with_mouse()
     player.prevX = mouseX
     player.prevY = mouseY
     print(player.dir)
+end
+
+function checkCollision(a, b, originX_a, originY_a, originX_b, originY_b)
+    -- Default origin values to 0 if not provided
+    originX_a = originX_a or 0
+    originY_a = originY_a or 0
+    originX_b = originX_b or 0
+    originY_b = originY_b or 0
+
+    -- Adjusted edges of object a
+    local a_left = a.x - originX_a
+    local a_right = a.x + a.width - originX_a
+    local a_top = a.y - originY_a
+    local a_bottom = a.y + a.height - originY_a
+
+    -- Adjusted edges of object b
+    local b_left = b.x - originX_b
+    local b_right = b.x + b.width - originX_b
+    local b_top = b.y - originY_b
+    local b_bottom = b.y + b.height - originY_b
+
+    -- Check if the rectangles overlap
+    local isColliding = a_right > b_left and
+                        a_left < b_right and
+                        a_bottom > b_top and
+                        a_top < b_bottom
+
+    return isColliding
 end

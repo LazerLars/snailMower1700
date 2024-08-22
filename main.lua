@@ -76,7 +76,23 @@ end
 local speed = 17  -- Adjust this value as needed (pixels per second)
 
 function love.update(dt)
-   
+    if love.keyboard.isDown("w") then
+        player.y = player.y - speed * dt
+        player.dir = "up"
+    end
+    if love.keyboard.isDown("s") then
+        player.y = player.y + speed * dt
+        player.dir = "down"
+    end
+    if love.keyboard.isDown("a") then
+        player.x = player.x - speed * dt
+        player.dir = "left"
+    end
+    if love.keyboard.isDown("d") then
+        player.x = player.x + speed * dt
+        player.dir = "right"
+    end
+
     --player.dir = "down" default
     --if moving the mouse to the right dir = "right"
     --if moving the mouse to the left dir = "left"

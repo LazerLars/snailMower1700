@@ -56,6 +56,10 @@ function love.load()
     player.originX = 2
     player.originY = 2
     player.degrees = nil
+    
+    -- Load the sound file
+    mowerSound = love.audio.newSource("src/sfx/mower_driving_01.mp3", "static")
+    mowerSound:setLooping(true) -- Set the sound to loop
 
     love.graphics.setBackgroundColor( 0/255, 135/255, 81/255)
     love.window.setTitle( 'snailMower1700' )
@@ -88,6 +92,7 @@ end
 
 function love.update(dt)
     local isMoving = false
+    -- loop this sound src\sfx\mower_driving_01.mp3 when wasd is pressed
     if love.keyboard.isDown("w") then
         player.y = player.y - player.speed * dt
         player.dir = "up"
@@ -115,6 +120,17 @@ function love.update(dt)
         player.animationSelected = player.animations.drive
         isMoving = true
         player.degrees = math.rad(270) -- flip the sprite right
+    end
+
+    -- Play or stop the sound based on movement
+    if isMoving then
+        if not mowerSound:isPlaying() then
+            love.audio.play(mowerSound)
+        end
+    else
+        if mowerSound:isPlaying() then
+            love.audio.stop(mowerSound)
+        end
     end
 
     if isMoving == false then

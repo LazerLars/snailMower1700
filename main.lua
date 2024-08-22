@@ -27,6 +27,8 @@ gardenItems = {}
 
 enemies = {}
 
+sounds = {}
+
 player = {}
 
 function love.load()
@@ -56,6 +58,24 @@ function love.load()
     player.originX = 2
     player.originY = 2
     player.degrees = nil
+
+    sounds.splatter = {} -- add all sounds which are in src/sfx/splatter/
+
+    sounds = {}
+    sounds.splatter = {}  -- Initialize the table to store splatter sounds
+
+    -- Get all files in the splatter directory
+    local splatterFiles = love.filesystem.getDirectoryItems("src/sfx/splatter/")
+
+    -- Loop through all the files and load them as sounds
+    for _, file in ipairs(splatterFiles) do
+        -- Get the file extension to ensure it's a valid audio file
+        if file:match("%.mp3$") or file:match("%.ogg$") or file:match("%.wav$") then
+            -- Load the sound file into the table
+            local soundPath = "src/sfx/splatter/" .. file
+            table.insert(sounds.splatter, love.audio.newSource(soundPath, "static"))
+        end
+    end
     
     -- Load the sound file
     mowerSound = love.audio.newSource("src/sfx/mower_driving_04.mp3", "static")
@@ -162,6 +182,15 @@ function love.update(dt)
         if checkCollision(player, snail, player.originX, player.originY) then
             print(key, "snail is colliding with player")
             table.remove(enemies, key)
+
+            -- Play a random splatter sound
+            if #sounds.splatter > 0 then
+                local randomIndex = math.random(1, #sounds.splatter)
+                randomIndex = math.random(1, #sounds.splatter)
+                randomIndex = math.random(1, #sounds.splatter)
+                randomIndex = math.random(1, #sounds.splatter)
+                love.audio.play(sounds.splatter[randomIndex])
+            end
         end
     end
 end
@@ -256,7 +285,7 @@ function add_snail()
     math.randomseed( os.time() )
 
     local x = math.random(1,64); 
-    x = math.random(1,64); 
+    x = math.random(1,64)
     x = math.random(1,64)
     x = math.random(1,64)
 

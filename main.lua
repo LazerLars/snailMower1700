@@ -146,28 +146,28 @@ function love.update(dt)
 
     local isMoving = false
     -- loop this sound src\sfx\mower_driving_01.mp3 when wasd is pressed
-    if love.keyboard.isDown("w") then
+    if love.keyboard.isDown("w") or love.keyboard.isDown("up")  then
         player.y = player.y - player.speed * dt
         player.dir = "up"
         player.animationSelected = player.animations.drive
         isMoving = true
         player.degrees = math.rad(180) -- flip the sprite
     end
-    if love.keyboard.isDown("s") then
+    if love.keyboard.isDown("s") or love.keyboard.isDown("down") then
         player.y = player.y + player.speed * dt
         player.dir = "down"
         player.animationSelected = player.animations.drive
         isMoving = true
         player.degrees = nil
     end
-    if love.keyboard.isDown("a") then
+    if love.keyboard.isDown("a") or love.keyboard.isDown("left") then
         player.x = player.x - player.speed * dt
         player.dir = "left"
         player.animationSelected = player.animations.drive
         isMoving = true
         player.degrees = math.rad(90)  -- flip the sprite left
     end
-    if love.keyboard.isDown("d") then
+    if love.keyboard.isDown("d") or love.keyboard.isDown("right") then
         player.x = player.x + player.speed * dt
         player.dir = "right"
         player.animationSelected = player.animations.drive
